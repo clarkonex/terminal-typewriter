@@ -2,7 +2,7 @@
 
 A minimalist text editor with the feel of 1937 — where typewriter meets terminal.
 
-![Terminal Typewriter](src-tauri/icons/icon.png)
+![Terminal Typewriter](screenshot.png)
 
 ## Features
 
