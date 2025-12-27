@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terminal Typewriter</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body data-theme="vintage-brown">
+    <!-- SVG Filter for CRT Barrel Distortion -->
+    <svg class="crt-filter-svg">
+      <defs>
+        <filter id="crt-warp">
+          <feFlood flood-color="black" result="black"/>
+          <feDisplacementMap in="SourceGraphic" in2="black" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- CRT Warp Container -->
+    <div class="crt-screen">
+      <!-- CRT Overlay -->
+      <div class="crt-overlay"></div>
+
+    <!-- Control Bar -->
+    <header class="control-bar">
+      <div class="control-group">
+        <label for="theme-select">Theme</label>
+        <select id="theme-select">
+          <option value="vintage-brown">Vintage Braun</option>
+          <option value="retro-orange">Retro Orange</option>
+          <option value="terminal-green">Terminal Grün</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="font-select">Font</label>
+        <select id="font-select">
+          <option value="special-elite">Special Elite</option>
+          <option value="american-typewriter">American Typewriter</option>
+          <option value="adler">Adler</option>
+          <option value="remington">Remington</option>
+          <option value="1942">1942</option>
+          <option value="berlin-email">Berlin Email</option>
+          <option value="cutmeout">CutMeOut</option>
+          <option value="facets">Facets</option>
+          <option value="hofstaetten">Hofstaetten</option>
+          <option value="zent">Zent</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="volume-slider">Lautstärke</label>
+        <input type="range" id="volume-slider" min="0" max="100" value="50" />
+      </div>
+
+      <div class="control-group">
+        <button id="sound-toggle" class="icon-btn" title="Sound an/aus">
+          <span class="sound-on">♪</span>
+          <span class="sound-off" style="display:none">♪̸</span>
+        </button>
+      </div>
+
+      <div class="control-group spacer"></div>
+
+      <div class="control-group">
+        <button id="save-btn" class="text-btn" title="Save text">Save</button>
+        <button id="exit-btn" class="text-btn danger" title="Exit">Exit</button>
+      </div>
+    </header>
+
+    <!-- Editor -->
+    <main class="editor-container">
+      <div id="editor" class="line-editor" spellcheck="false">
+        <div class="line" data-font="special-elite" contenteditable="true"></div>
+      </div>
+    </main>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+      <span id="char-count">0 Zeichen</span>
+      <span id="word-count">0 Wörter</span>
+      <span class="app-name">Terminal Typewriter — 1937</span>
+    </footer>
+
+    </div><!-- end crt-screen -->
+  </body>
+</html>

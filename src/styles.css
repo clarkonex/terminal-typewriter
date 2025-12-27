@@ -1,0 +1,560 @@
+/* ===== FONTS ===== */
+@font-face {
+  font-family: 'Special Elite';
+  src: url('/assets/fonts/SpecialElite.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'American Typewriter';
+  src: local('American Typewriter');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Adler';
+  src: url('/assets/fonts/Adler.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Remington';
+  src: url('/assets/fonts/myoldrem.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: '1942';
+  src: url('/assets/fonts/1942.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Berlin Email';
+  src: url('/assets/fonts/Berlin Email.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CutMeOut';
+  src: url('/assets/fonts/CutMeOut.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Facets';
+  src: url('/assets/fonts/FacetsNF.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hofstaetten';
+  src: url('/assets/fonts/Hofstaetten.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Zent';
+  src: url('/assets/fonts/Zent____.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  /* Default: Vintage Brown */
+  --bg-primary: #3C2415;
+  --bg-secondary: #2C1810;
+  --bg-paper: #F4E4BC;
+  --text-primary: #2C1810;
+  --text-secondary: #5C4030;
+  --accent: #8B7355;
+  --control-bg: rgba(44, 24, 16, 0.9);
+  --control-text: #F4E4BC;
+
+  /* Font */
+  --editor-font: 'Special Elite', monospace;
+  --ui-font: 'IBM Plex Mono', monospace;
+
+  /* Sizing */
+  --editor-font-size: 18px;
+  --editor-line-height: 1.8;
+  --control-height: 48px;
+  --status-height: 32px;
+}
+
+/* ===== THEME: VINTAGE BROWN ===== */
+[data-theme="vintage-brown"] {
+  --bg-primary: #3C2415;
+  --bg-secondary: #2C1810;
+  --bg-paper: #F4E4BC;
+  --text-primary: #2C1810;
+  --text-secondary: #5C4030;
+  --accent: #8B7355;
+  --control-bg: rgba(44, 24, 16, 0.95);
+  --control-text: #F4E4BC;
+  --crt-enabled: 0;
+}
+
+/* ===== THEME: RETRO ORANGE ===== */
+[data-theme="retro-orange"] {
+  --bg-primary: #0D0A07;
+  --bg-secondary: #000000;
+  --bg-paper: #0D0A07;
+  --text-primary: #D4842A;
+  --text-secondary: #8B5A1A;
+  --accent: #C47A20;
+  --control-bg: rgba(5, 3, 0, 0.95);
+  --control-text: #D4842A;
+  --crt-enabled: 0;
+}
+
+/* ===== THEME: TERMINAL GREEN ===== */
+[data-theme="terminal-green"] {
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #050505;
+  --bg-paper: #0A0A0A;
+  --text-primary: #33FF33;
+  --text-secondary: #00AA00;
+  --accent: #00FF00;
+  --control-bg: rgba(5, 5, 5, 0.95);
+  --control-text: #33FF33;
+  --crt-enabled: 1;
+}
+
+/* ===== BASE STYLES ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--ui-font);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== CRT EFFECTS ===== */
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* CRT Screen Curvature - Subtle Vignette */
+.crt-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse 70% 70% at center,
+    transparent 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.15) 70%,
+    rgba(0, 0, 0, 0.4) 85%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  pointer-events: none;
+}
+
+/* Enable CRT for all themes */
+[data-theme="vintage-brown"] .crt-overlay,
+[data-theme="retro-orange"] .crt-overlay,
+[data-theme="terminal-green"] .crt-overlay {
+  opacity: 1;
+}
+
+/* Scanlines only for terminal green */
+[data-theme="terminal-green"] .crt-overlay {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  animation: flicker 0.15s infinite;
+}
+
+[data-theme="terminal-green"] #editor {
+  text-shadow:
+    0 0 5px var(--text-primary),
+    0 0 10px rgba(51, 255, 51, 0.5),
+    0 0 20px rgba(51, 255, 51, 0.3);
+}
+
+[data-theme="terminal-green"] #editor::placeholder {
+  text-shadow:
+    0 0 5px var(--text-secondary),
+    0 0 10px rgba(0, 170, 0, 0.3);
+}
+
+@keyframes flicker {
+  0% { opacity: 0.97; }
+  50% { opacity: 1; }
+  100% { opacity: 0.98; }
+
+}
+
+/* Hide SVG filter definition */
+.crt-filter-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* CRT Screen Container with Curvature */
+.crt-screen {
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  right: 25px;
+  bottom: 25px;
+  border-radius: 35px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  box-shadow:
+    inset 0 0 100px rgba(0, 0, 0, 0.4),
+    inset 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Inner screen edge - creates depth */
+.crt-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 35px;
+  box-shadow:
+    inset 0 0 0 3px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 1001;
+}
+
+/* Body becomes the bezel/frame */
+body {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    #4a4540 0%,
+    #3d3833 20%,
+    #2e2a26 50%,
+    #252220 80%,
+    #1a1816 100%
+  ) !important;
+}
+
+/* Bezel inner shadow */
+body::before {
+  content: '';
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border-radius: 42px;
+  box-shadow:
+    inset 0 5px 15px rgba(0, 0, 0, 0.8),
+    inset 0 -3px 10px rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Bezel outer highlight */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== CONTROL BAR ===== */
+.control-bar {
+  height: var(--control-height);
+  background: var(--control-bg);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 24px;
+  border-bottom: 1px solid var(--accent);
+  z-index: 10;
+  -webkit-app-region: drag;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  -webkit-app-region: no-drag;
+}
+
+.control-group label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--control-text);
+  opacity: 0.7;
+}
+
+.control-group select,
+.control-group input[type="range"] {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--control-text);
+  padding: 4px 8px;
+  font-family: var(--ui-font);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.control-group select:hover,
+.control-group select:focus {
+  border-color: var(--text-primary);
+  outline: none;
+}
+
+.control-group select option {
+  background: var(--bg-secondary);
+  color: var(--control-text);
+}
+
+/* Volume Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 80px;
+  height: 4px;
+  background: var(--accent);
+  border: none;
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--control-text);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Icon Button */
+.icon-btn {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--control-text);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+/* Text Buttons */
+.text-btn {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--control-text);
+  padding: 4px 12px;
+  font-family: var(--ui-font);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.text-btn:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.text-btn.danger {
+  border-color: #aa4444;
+  color: #cc6666;
+}
+
+.text-btn.danger:hover {
+  background: #aa4444;
+  color: var(--bg-primary);
+}
+
+/* Spacer pushes buttons to the right */
+.control-group.spacer {
+  flex: 1;
+}
+
+/* ===== EDITOR ===== */
+.editor-container {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  background: var(--bg-paper);
+}
+
+/* Line-based Editor */
+.line-editor {
+  flex: 1;
+  background: transparent;
+  padding: 40px 60px;
+  overflow-y: auto;
+  color: var(--text-primary);
+}
+
+.line {
+  min-height: 1.8em;
+  line-height: 1.8;
+  outline: none;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.line:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-secondary);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.line:first-child:empty::before {
+  content: 'Beginne zu schreiben...';
+}
+
+/* Font per line */
+.line[data-font="special-elite"] { font-family: 'Special Elite', monospace; font-size: 18px; }
+.line[data-font="american-typewriter"] { font-family: 'American Typewriter', monospace; font-size: 17px; }
+.line[data-font="adler"] { font-family: 'Adler', monospace; font-size: 22px; }
+.line[data-font="remington"] { font-family: 'Remington', monospace; font-size: 20px; }
+.line[data-font="1942"] { font-family: '1942', monospace; font-size: 20px; }
+.line[data-font="berlin-email"] { font-family: 'Berlin Email', monospace; font-size: 18px; }
+.line[data-font="cutmeout"] { font-family: 'CutMeOut', monospace; font-size: 20px; }
+.line[data-font="facets"] { font-family: 'Facets', monospace; font-size: 20px; }
+.line[data-font="hofstaetten"] { font-family: 'Hofstaetten', monospace; font-size: 18px; }
+.line[data-font="zent"] { font-family: 'Zent', monospace; font-size: 20px; }
+
+/* Caret color */
+.line {
+  caret-color: var(--accent);
+}
+
+/* Font Classes - with size normalization */
+.font-special-elite { --editor-font: 'Special Elite', monospace; --editor-font-size: 18px; }
+.font-american-typewriter { --editor-font: 'American Typewriter', monospace; --editor-font-size: 17px; }
+.font-adler { --editor-font: 'Adler', monospace; --editor-font-size: 22px; }
+.font-remington { --editor-font: 'Remington', monospace; --editor-font-size: 20px; }
+.font-1942 { --editor-font: '1942', monospace; --editor-font-size: 20px; }
+.font-berlin-email { --editor-font: 'Berlin Email', monospace; --editor-font-size: 18px; }
+.font-cutmeout { --editor-font: 'CutMeOut', monospace; --editor-font-size: 20px; }
+.font-facets { --editor-font: 'Facets', monospace; --editor-font-size: 20px; }
+.font-hofstaetten { --editor-font: 'Hofstaetten', monospace; --editor-font-size: 18px; }
+.font-zent { --editor-font: 'Zent', monospace; --editor-font-size: 20px; }
+
+/* ===== STATUS BAR ===== */
+.status-bar {
+  height: var(--status-height);
+  background: var(--control-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--control-text);
+  opacity: 0.7;
+  border-top: 1px solid var(--accent);
+  z-index: 10;
+}
+
+.status-bar span {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.app-name {
+  font-style: italic;
+}
+
+/* ===== SCROLLBAR ===== */
+#editor::-webkit-scrollbar {
+  width: 8px;
+}
+
+#editor::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+#editor::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+#editor::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
