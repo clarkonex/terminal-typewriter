@@ -236,7 +236,7 @@ const state = {
 
 // ===== DOM ELEMENTS =====
 let editor, themeSelect, fontSelect, volumeSlider, soundToggle;
-let charCount, wordCount, saveBtn, exitBtn;
+let charCount, wordCount, saveBtn, exportPngBtn, exitBtn;
 
 // ===== INITIALIZATION =====
 async function init() {
@@ -249,6 +249,7 @@ async function init() {
   charCount = document.getElementById('char-count');
   wordCount = document.getElementById('word-count');
   saveBtn = document.getElementById('save-btn');
+  exportPngBtn = document.getElementById('export-png-btn');
   exitBtn = document.getElementById('exit-btn');
 
   // Initialize sound system
@@ -314,6 +315,9 @@ function setupEventListeners() {
   // Save button
   saveBtn.addEventListener('click', saveText);
 
+  // Export PNG button
+  exportPngBtn.addEventListener('click', savePNG);
+
   // Exit button
   exitBtn.addEventListener('click', exitApp);
 
@@ -368,6 +372,70 @@ async function saveText() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+}
+
+async function savePNG() {
+  const text = getEditorText();
+  if (!text.trim()) {
+    return;
+  }
+
+  try {
+    // Capture the entire CRT screen as PNG
+    const crtScreen = document.querySelector('.crt-screen');
+    const canvas = await html2canvas(crtScreen, {
+      backgroundColor: null,
+      scale: 2, // Higher quality
+      logging: false
+    });
+
+    // Convert canvas to blob
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+    // Use Tauri's native save dialog
+    const filePath = await window.__TAURI__.dialog.save({
+      defaultPath: 'dokument.png',
+      filters: [{
+        name: 'PNG Bild',
+        extensions: ['png']
+      }]
+    });
+
+    if (filePath) {
+      // Convert blob to array buffer
+      const arrayBuffer = await blob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      // Write the file (using writeFile for binary data in Tauri v2)
+      await window.__TAURI__.fs.writeFile(filePath, uint8Array);
+      console.log('PNG gespeichert:', filePath);
+    }
+  } catch (e) {
+    console.error('PNG Speichern fehlgeschlagen:', e);
+
+    // Fallback: Browser download
+    try {
+      const crtScreen = document.querySelector('.crt-screen');
+      const canvas = await html2canvas(crtScreen, {
+        backgroundColor: null,
+        scale: 2,
+        logging: false
+      });
+
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'dokument.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    } catch (fallbackError) {
+      console.error('Fallback PNG speichern fehlgeschlagen:', fallbackError);
+    }
   }
 }
 
